@@ -2,4 +2,6 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
 
 
-# flowing
+# Flowing
+Flowing is a [https://mikhail.io/2016/01/monads-explained-in-csharp/](monadic) approach to [https://en.wikipedia.org/wiki/Dataflow_programming](dataflow programming), initiated in C#.
+Currently under devlopment, it is still not production-ready.
