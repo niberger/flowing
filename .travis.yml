@@ -5,4 +5,7 @@ script:
   - dotnet restore 
   - dotnet build
 after_success:
-  - echo $super_secret
+  - echo "flowing.$MAJOR_VERSION_NUMBER.$MINOR_VERSION_NUMBER.$TRAVIS_BUILD_NUMBER.nupkg"
+#  - nuget pack flowing.nuspec -Version $MAJOR_VERSION_NUMBER.$MINOR_VERSION_NUMBER.$TRAVIS_BUILD_NUMBER
+#  - nuget setApiKey $NUGET_API_KEY -Source https://www.nuget.org -Verbosity quiet
+#  - nuget push flowing.$MAJOR_VERSION_NUMBER.$MINOR_VERSION_NUMBER.$TRAVIS_BUILD_NUMBER.nupkg -Source https://www.nuget.org/api/v2/package
