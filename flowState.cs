@@ -19,11 +19,11 @@ namespace Flowing
     }
     public class Error<T>: IFlowState<T>
     {
-        public Error(String msg)
+        public Error(Exception ex)
         {
-            Msg = msg;
+            Ex = ex;
         }
-        public String Msg;
+        public Exception Ex;
     }
     public class Pending<T>: IFlowState<T> {}
     public static class FlowState
@@ -35,7 +35,7 @@ namespace Flowing
                 case Value<T> val:
                     return selector(val.Val);
                 case Error<T> err:
-                    return new Error<S>(err.Msg);
+                    return new Error<S>(err.Ex);
                 default:
                     return new Pending<S>();
             }
