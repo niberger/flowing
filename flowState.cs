@@ -33,7 +33,14 @@ namespace Flowing
             switch(state)
             {
                 case Value<T> val:
-                    return selector(val.Val);
+                    try
+                    {
+                        return selector(val.Val);
+                    }
+                    catch(Exception e)
+                    {
+                        return new Error<S>(e);
+                    }
                 case Error<T> err:
                     return new Error<S>(err.Ex);
                 default:

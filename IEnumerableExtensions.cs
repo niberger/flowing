@@ -18,5 +18,4 @@ namespace Flowing
             return flowCollection.Aggregate(Flow.Pending<IEnumerable<T>>(), innerConcat);
         }
     }
-
 }
