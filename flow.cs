@@ -21,10 +21,13 @@ namespace Flowing
     }
     public static class Flow
     {
+        //create a basic flow, always equal to the given value
         public static IFlow<T> Return<T>(T value) => new Flow<T>(Observable.Return(new Value<T>(value)));
+        //create a basic flow, always in error state
         public static IFlow<T> Error<T>(Exception error) => new Flow<T>(Observable.Return(new Error<T>(error)));
+        //create a basec flow, always in pending state
         public static IFlow<T> Pending<T>() => new Flow<T>(Observable.Return(new Pending<T>()));
-        public static IFlow<T> Flatten<T>(this IFlowState<IFlow<T>> state)
+        internal static IFlow<T> Flatten<T>(this IFlowState<IFlow<T>> state)
         {
             switch(state)
             {
@@ -36,14 +39,14 @@ namespace Flowing
                     return Pending<T>();
             }
         }
-        public static IFlow<S> SelectMany<T, S>(this IFlow<T> source, Func<T, IFlow<S>> resultSelector)
+        public static IFlow<TResult> SelectMany<TSource, TResult>(this IFlow<TSource> source, Func<TSource, IFlow<TResult>> resultSelector)
         {
-            return new Flow<S>(source.StateObs.Select(state => state.Select(resultSelector).Flatten().StateObs).Switch());
+            return source.Select(resultSelector).Flatten();
         }
-        /*public static IFlow<U> SelectMany<T, S, U>(this IFlow<T> source, Func<T, IEnumerable<S>> collectionSelector, Func<S, IFlow<U>> resultSelector)
+        public static IFlow<TResult> SelectMany<TSource, TFlow, TResult>(this IFlow<TSource> source, Func<TSource, IFlow<TFlow>> flowSelector, Func<TSource, TFlow, TResult> resultSelector)
         {
-            return source.Select(x => collectionSelector(x)).Select(c => c.Select(resultSelector))
-        }// */
+            return source.SelectMany(s => flowSelector(s).Select(t => resultSelector(s, t)));
+        }
         public static IFlow<S> Select<T,S>(this IFlow<T> flow, Func<T,S> selector) => new Flow<S>(flow.StateObs.Select(t => t.Select(selector)));
         public static IFlow<T> Flatten<T>(this IFlow<IFlow<T>> flow) => new Flow<T>(flow.StateObs.Select(state => state.Flatten().StateObs).Switch());
         public static void Subscribe<T>(this IFlow<T> flow, Action<T> onNext, Action<Exception> onError, Action onPending)

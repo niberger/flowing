@@ -5,4 +5,4 @@
 # Flowing
 Flowing is a [monadic](https://mikhail.io/2016/01/monads-explained-in-csharp/) approach to [dataflow programming](https://en.wikipedia.org/wiki/Dataflow_programming), initiated in C#.
 
-Built upon [reactiveX](http://reactivex.io/)
+Built upon [reactiveX](http://reactivex.io/).
