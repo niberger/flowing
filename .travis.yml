@@ -4,7 +4,7 @@ dotnet: 2.0.0
 script:
   - dotnet restore 
   - dotnet build
-#after_success:
+after_success:
 #TODO: manage version number
-#  - dotnet pack -c Release --version-suffix beta$TRAVIS_BUILD_NUMBER -o nuget_package
-#  - dotnet nuget push nuget_package/flowing.1.0.0-beta$TRAVIS_BUILD_NUMBER.nupkg -s https://www.nuget.org/api/v2/package -k $NUGET_API_KEY
+  - dotnet pack -c Release --version-suffix beta$TRAVIS_BUILD_NUMBER -o nuget_package
+  - dotnet nuget push nuget_package/flowing.1.0.0-beta$TRAVIS_BUILD_NUMBER.nupkg -s https://www.nuget.org/api/v2/package -k $NUGET_API_KEY
