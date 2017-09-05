@@ -25,7 +25,14 @@ namespace Flowing
         }
         public Exception Ex;
     }
-    public class Pending<T>: IFlowState<T> {}
+    public class Pending<T>: IFlowState<T> 
+    {
+        //all Pending<T> are the same
+        public override bool Equals(object obj)
+            => obj is Pending<T>;
+        public override int GetHashCode()
+            => typeof(T).GetHashCode();
+    }
     public static class FlowState
     {
         public static IFlowState<S> SelectMany<T,S>(this IFlowState<T> state, Func<T,IFlowState<S>> valueSelector, Func<Exception, IFlowState<S>> errorSelector)

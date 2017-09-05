@@ -15,7 +15,7 @@ namespace Tests
         IEnumerable<double> randomListWithoutRepetition => randomList.Distinct();
 
         [Fact]
-        public void FlowEnumerableWithoutRepetition()
+        public void flow_enumerable_without_repetition()
         {
             IEnumerable<double> source = randomListWithoutRepetition;
             var flow = source.ToObservable().ToFlow();
@@ -25,7 +25,7 @@ namespace Tests
         }
 
         [Fact]
-        public void FlowEnumerableWithRepetition()
+        public void flow_enumerable_with_repetition()
         {
             IEnumerable<double> source = randomList;
             var flow = source.ToObservable().ToFlow();
@@ -35,17 +35,18 @@ namespace Tests
         }
 
         [Fact]
-        public void FlowOnePendingPerValue()
+        public void flow_one_pending_per_value()
         {
             IEnumerable<double> source = randomList;
             var flow = source.ToObservable().ToFlow();
+            var complexFlow = from x in flow from y in flow select x + y;
             int counter = 0;
-            flow.Subscribe(x => ++counter, e => {}, () => --counter);
-            Assert.Equal(counter, 0);
+            complexFlow.Subscribe(x => ++counter, e => {}, () => --counter);
+            Assert.Equal(0, counter);
         }
 
         [Fact]
-        public void MayFlowExceptions()
+        public void may_flow_exceptions()
         {
             Func<double,double> f = x => (x > 0)? x : throw new NotImplementedException();
 
@@ -58,7 +59,7 @@ namespace Tests
         }
 
         [Fact]
-        public void CanRecoverFromExceptions()
+        public void can_recover_from_exceptions()
         {
             Func<double,double> f = x => (x > 0)? x : throw new NotImplementedException();
             
@@ -70,7 +71,7 @@ namespace Tests
         }
 
         [Fact]
-        public void ThrowNotRecoveredExceptions()
+        public void throw_not_recovered_exceptions()
         {
             Func<double,double> f = x => (x > 0)? x : throw new NotImplementedException();
 
@@ -86,6 +87,41 @@ namespace Tests
                 catched = true;
             }
             Assert.True(catched);
+        }
+
+        [Fact]
+        public void merge_two_flows()
+        {
+            IEnumerable<double> source = randomList;
+            var flow = source.ToObservable().ToFlow();
+
+            var sum = from x in flow
+                from y in flow
+                select x + y;
+            
+            var target = new List<double> {};
+            sum.Subscribe(x => target.Add(x));
+
+            Assert.Equal(target.Count(), source.Count());
+            Assert.Equal(target.Last(), 2*source.Last());
+        }
+
+        [Fact]
+        public void merge_three_flows()
+        {
+            IEnumerable<double> source = randomList;
+            var flow = source.ToObservable().ToFlow();
+
+            var sum = from x in flow
+                from y in flow
+                from z in flow
+                select x + y + z;
+            
+            var target = new List<double> {};
+            sum.Subscribe(x => target.Add(x));
+
+            Assert.Equal(target.Count(), source.Count());
+            Assert.Equal(target.Last(), 3*source.Last());
         }
     }
 }
