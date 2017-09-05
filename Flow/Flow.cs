@@ -51,6 +51,8 @@ namespace Flowing
         }
         public static IFlow<T> Flatten<T>(this IFlow<IFlow<T>> flow) 
             => new Flow<T>(flow.StateObs.Select(state => state.Flatten().StateObs).Switch());
+        public static IFlow<S> Select<T,S>(this IFlow<T> flow, Func<T,S> valueSelector, Func<Exception,S> errorSelector) 
+            => new Flow<S>(flow.StateObs.Select(t => t.Select(valueSelector, errorSelector)));
         public static IFlow<S> Select<T,S>(this IFlow<T> flow, Func<T,S> selector) 
             => new Flow<S>(flow.StateObs.Select(t => t.Select(selector)));
         public static IFlow<TResult> SelectMany<TSource, TResult>(this IFlow<TSource> source, Func<TSource, IFlow<TResult>> resultSelector)

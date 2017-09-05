@@ -35,7 +35,7 @@ namespace Tests
         }
 
         [Fact]
-        public void OnePendingPerValue()
+        public void FlowOnePendingPerValue()
         {
             IEnumerable<double> source = randomList;
             var flow = source.ToObservable().ToFlow();
@@ -45,15 +45,47 @@ namespace Tests
         }
 
         [Fact]
-        public void FlowExceptions()
+        public void MayFlowExceptions()
         {
             Func<double,double> f = x => (x > 0)? x : throw new NotImplementedException();
+
             IEnumerable<double> source = randomList;
             var flow = source.ToObservable().ToFlow();
             int n_values = 0;
             int n_exceptions = 0;
             flow.Select(f).Subscribe(x => ++n_values, e => ++n_exceptions);
             Assert.Equal(n_values + n_exceptions, source.Count());
+        }
+
+        [Fact]
+        public void CanRecoverFromExceptions()
+        {
+            Func<double,double> f = x => (x > 0)? x : throw new NotImplementedException();
+            
+            IEnumerable<double> source = randomList;
+            var flow = source.ToObservable().ToFlow();
+            var target = new List<double> {};
+            flow.Select(f).Select(x => 0.0, e => (e is NotImplementedException)? 0.0 : throw e).Subscribe(x => target.Add(x));
+            Assert.Equal(source.Select(x => 0.0), target);
+        }
+
+        [Fact]
+        public void ThrowNotRecoveredExceptions()
+        {
+            Func<double,double> f = x => (x > 0)? x : throw new NotImplementedException();
+
+            IEnumerable<double> source = randomList;
+            var flow = source.ToObservable().ToFlow();
+            bool catched = false;
+            try
+            {
+                flow.Select(f).Subscribe(x => {});
+            }
+            catch(NotImplementedException)
+            {
+                catched = true;
+            }
+            Assert.True(catched);
         }
     }
 }

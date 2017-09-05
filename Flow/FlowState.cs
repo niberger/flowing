@@ -28,26 +28,39 @@ namespace Flowing
     public class Pending<T>: IFlowState<T> {}
     public static class FlowState
     {
-        public static IFlowState<S> SelectMany<T,S>(this IFlowState<T> state, Func<T,IFlowState<S>> selector)
+        public static IFlowState<S> SelectMany<T,S>(this IFlowState<T> state, Func<T,IFlowState<S>> valueSelector, Func<Exception, IFlowState<S>> errorSelector)
         {
             switch(state)
             {
                 case Value<T> val:
                     try
                     {
-                        return selector(val.Val);
+                        return valueSelector(val.Val);
                     }
                     catch(Exception e)
                     {
                         return new Error<S>(e);
                     }
                 case Error<T> err:
-                    return new Error<S>(err.Ex);
+                    try
+                    {
+                        return errorSelector(err.Ex);
+                    }
+                    catch(Exception e)
+                    {
+                        return new Error<S>(e);
+                    }
                 default:
                     return new Pending<S>();
             }
         }
-        public static IFlowState<S> Select<T,S>(this IFlowState<T> state, Func<T,S> selector) => state.SelectMany(t => new Value<S>(selector(t)));
-        public static IFlowState<T> Flatten<T>(this IFlowState<IFlowState<T>> state) => state.SelectMany(t => t);
+        public static IFlowState<S> SelectMany<T,S>(this IFlowState<T> state, Func<T,IFlowState<S>> selector)
+            => state.SelectMany(selector, e => new Error<S>(e));
+        public static IFlowState<S> Select<T,S>(this IFlowState<T> state, Func<T,S> valueSelector, Func<Exception,S> errorSelector) 
+            => state.SelectMany(t => new Value<S>(valueSelector(t)), e => new Value<S>(errorSelector(e)));
+        public static IFlowState<S> Select<T,S>(this IFlowState<T> state, Func<T,S> selector) 
+            => state.SelectMany(t => new Value<S>(selector(t)));
+        public static IFlowState<T> Flatten<T>(this IFlowState<IFlowState<T>> state) 
+            => state.SelectMany(t => t);
     }
 }

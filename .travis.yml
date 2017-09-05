@@ -4,6 +4,7 @@ dotnet: 2.0.0
 script:
   - dotnet restore Flow
   - dotnet build Flow
+  - dotnet restore Tests
   - dotnet test Tests
 after_success:
 #TODO: manage version number
