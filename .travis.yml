@@ -2,6 +2,7 @@ language: csharp
 mono: none
 dotnet: 2.0.0
 script:
+  - cd src
   - dotnet restore 
   - dotnet build
 after_success:
