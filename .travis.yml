@@ -5,6 +5,8 @@ script:
   - cd Flow
   - dotnet restore 
   - dotnet build
+  - cd ../Tests
+  - dotnet test
 after_success:
 #TODO: manage version number
   - dotnet pack -c Release --version-suffix beta$TRAVIS_BUILD_NUMBER -o nuget_package
