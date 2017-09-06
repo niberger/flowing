@@ -12,20 +12,9 @@ namespace Tests
     public class FlowTest
     {
         IEnumerable<double> randomList = new List<double> {1.0, 3.5, Math.PI, 2.2, 2.2, Double.Epsilon, Double.NegativeInfinity, 5.6, 2.2, -9.1, 0.0, 0.0, Double.PositiveInfinity, 3.2};
-        IEnumerable<double> randomListWithoutRepetition => randomList.Distinct();
 
         [Fact]
-        public void flow_enumerable_without_repetition()
-        {
-            IEnumerable<double> source = randomListWithoutRepetition;
-            var flow = source.ToObservable().ToFlow();
-            var target = new List<double> {};
-            flow.Subscribe(x => target.Add(x));
-            Assert.Equal(source, target);
-        }
-
-        [Fact]
-        public void flow_enumerable_with_repetition()
+        public void flow_enumerable()
         {
             IEnumerable<double> source = randomList;
             var flow = source.ToObservable().ToFlow();

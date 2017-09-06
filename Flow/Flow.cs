@@ -10,6 +10,7 @@ namespace Flowing
 {
     public class IFlow<T>
     {
+        internal IFlow(){}
         internal IObservable<IFlowState<T>> StateObs { get; set; }
     }
     internal class Flow<T> : IFlow<T>
@@ -21,16 +22,24 @@ namespace Flowing
     }
     public static class Flow
     {
-        //create a basic flow, always equal to the given value
+        /// <summary>
+        ///     create a basic flow, always equal to the given value
+        /// </summary>
         public static IFlow<T> Return<T>(T value) 
             => new Flow<T>(Observable.Return(new Value<T>(value)));
-        //create a basic flow, always in error state
+        /// <summary>
+        ///     create a basic flow, always in error state
+        /// </summary>
         public static IFlow<T> Error<T>(Exception error) 
             => new Flow<T>(Observable.Return(new Error<T>(error)));
-        //create a basic flow, always in pending state
+        /// <summary>
+        ///     create a basic flow, always in pending state
+        /// </summary>
         public static IFlow<T> Pending<T>() 
             => new Flow<T>(Observable.Return(new Pending<T>()));
-        //create a flow from an observable of values
+        /// <summary>
+        ///     create a flow from an observable of values
+        /// </summary>
         public static IFlow<T> ToFlow<T>(this IObservable<T> obs)
         {
             var stateObs = obs.SelectMany(x => (new List<IFlowState<T>>{new Pending<T>(), new Value<T>(x)}).ToObservable());
@@ -59,7 +68,7 @@ namespace Flowing
             => source.Select(resultSelector).Flatten();
         public static IFlow<TResult> SelectMany<TSource, TFlow, TResult>(this IFlow<TSource> source, Func<TSource, IFlow<TFlow>> flowSelector, Func<TSource, TFlow, TResult> resultSelector)
             => source.SelectMany(s => flowSelector(s).Select(t => resultSelector(s, t)));
-        public static void Subscribe<T>(this IFlow<T> flow, Action<T> onNext, Action<Exception> onError, Action onPending)
+        public static IDisposable Subscribe<T>(this IFlow<T> flow, Action<T> onNext, Action<Exception> onError, Action onPending)
         {
             Action<IFlowState<T>> stateObsOnNext = s => {
                 if(s is Value<T> val)
@@ -70,11 +79,11 @@ namespace Flowing
                     onPending();
             };
 
-            flow.StateObs.Subscribe(stateObsOnNext);
+            return flow.StateObs.Subscribe(stateObsOnNext);
         }
-        public static void Subscribe<T>(this IFlow<T> flow, Action<T> onNext, Action<Exception> onError) 
+        public static IDisposable Subscribe<T>(this IFlow<T> flow, Action<T> onNext, Action<Exception> onError) 
             => flow.Subscribe(onNext, onError, () => {});
-        public static void Subscribe<T>(this IFlow<T> flow, Action<T> onNext) 
+        public static IDisposable Subscribe<T>(this IFlow<T> flow, Action<T> onNext) 
             => flow.Subscribe(onNext, (ex) => {throw ex;}, () => {});
     }
 }
