@@ -19,20 +19,6 @@
   </style>
 
   <g id="layer1">
-    <path
-      id="p1"
-      d="m 0 30 c 10 0, 10 0, 20 0"
-      style="fill:none;stroke:#000000" >
-    </path>
-    <circle id ="c1" r="3" cx="0" cy="0" fill="#44cc11" />
-    <animateMotion 
-      id="aCircle1"
-      xlink:href="#c1" 
-      begin="0s"
-      dur="0.6s"
-      fill="freeze">
-      <mpath xlink:href="#p1" />
-    </animateMotion>
 
     <rect
       id="f1"
@@ -68,35 +54,9 @@
       style="fill:none;stroke:#000000" >
     </path>
     <circle id ="c2" r="3" cx="0" cy="0" fill="#44cc11" visibility="hidden" />
-    <animateMotion 
-      id="aCircle2"
-      xlink:href="#c2" 
-      begin="aRect1.end"
-      dur="1s"
-      fill="freeze">
-      <mpath xlink:href="#p2" />
-    </animateMotion>
-    <set xlink:href="#c2" 
-      attributeName="visibility" 
-      attributeType="XML" 
-      from="hidden" 
-      to="visible"
-      begin="aCircle2.begin"/>
+
     <circle id ="c3" r="3" cx="0" cy="0" fill="#44cc11" visibility="hidden"/>
-    <animateMotion 
-      id="aCircle3"
-      xlink:href="#c3" 
-      begin="aRect1.end"
-      dur="1s"
-      fill="freeze">
-      <mpath xlink:href="#p3" />
-    </animateMotion>
-    <set xlink:href="#c3" 
-      attributeName="visibility" 
-      attributeType="XML" 
-      from="hidden" 
-      to="visible"
-      begin="aCircle3.begin"/>
+
 
     <rect
     x="82"
