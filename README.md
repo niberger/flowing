@@ -8,6 +8,3 @@ Flowing is a [monadic](https://mikhail.io/2016/01/monads-explained-in-csharp/) a
 
 Built upon [reactiveX](http://reactivex.io/).
 
-
-![Test of svg animation](./Doc/flow.svg)
-<img src="./Doc/flow.svg">
