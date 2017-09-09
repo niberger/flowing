@@ -37,15 +37,8 @@ namespace Flowing
         /// </summary>
         public static IFlow<T> Pending<T>() 
             => new Flow<T>(Observable.Return(new Pending<T>()));
-        /// <summary>
-        ///     create a flow from an observable of values
-        /// </summary>
-        public static IFlow<T> ToFlow<T>(this IObservable<T> obs)
-        {
-            var stateObs = obs.SelectMany(x => (new List<IFlowState<T>>{new Pending<T>(), new Value<T>(x)}).ToObservable());
-            return new Flow<T>(stateObs);
-
-        }
+        public static IObservable<T> ToObservable<T>(this IFlow<T> flow)
+            =>flow.StateObs.OfType<Value<T>>().Select(val => val.Val);
         internal static IFlow<T> Flatten<T>(this IFlowState<IFlow<T>> state)
         {
             switch(state)

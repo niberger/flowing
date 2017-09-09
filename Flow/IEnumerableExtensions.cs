@@ -13,9 +13,11 @@ namespace Flowing
         {
             Func<IFlow<IEnumerable<T>>, IFlow<T>, IFlow<IEnumerable<T>>> innerConcat = (IFlow<IEnumerable<T>> collFlow, IFlow<T> flow) => 
             {
-                return collFlow.SelectMany(coll => flow.Select(val => coll.Concat(new List<T>{val})));
+                return from coll in collFlow
+                    from val in flow
+                    select coll.Concat(new List<T>{val});
             };
-            return flowCollection.Aggregate(Flow.Pending<IEnumerable<T>>(), innerConcat);
+            return flowCollection.Aggregate(Flow.Return<IEnumerable<T>>(new List<T>()), innerConcat);
         }
     }
 }
