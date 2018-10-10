@@ -112,5 +112,18 @@ namespace Tests
             Assert.Equal(target.Count(), source.Count());
             Assert.Equal(target.Last(), 3*source.Last());
         }
+
+        [Fact]
+        public void convert_list_to_flow()
+        {
+            IEnumerable<double> source = randomList;
+            var flows = Enumerable.Range(0,5).Select(i => source.ToObservable().ToFlow());
+            var flow = flows.ToFlow();
+            
+            var target = new List<IEnumerable<double>> {};
+            flow.Subscribe(x => target.Add(x));
+
+            Assert.True(target.Last().All(x => x == source.Last()));
+        }
     }
 }

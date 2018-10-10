@@ -8,13 +8,13 @@ using System.Reactive.Linq;
 
 namespace Flowing
 {
-    public class IFlow<T>
+    public interface IFlow<out T>
     {
-        internal IFlow(){}
-        internal IObservable<IFlowState<T>> StateObs { get; set; }
+        IObservable<IFlowState<T>> StateObs { get; }
     }
     internal class Flow<T> : IFlow<T>
     {
+        public IObservable<IFlowState<T>> StateObs { get; }
         internal Flow(IObservable<IFlowState<T>> stateObs)
         {
             StateObs = stateObs;

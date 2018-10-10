@@ -8,7 +8,7 @@ using System.Reactive.Linq;
 
 namespace Flowing
 {
-    public interface IFlowState<T>{ }
+    public interface IFlowState<out T>{ }
     public class Value<T>: IFlowState<T>
     {
         public Value(T val)
@@ -35,6 +35,12 @@ namespace Flowing
     }
     public static class FlowState
     {
+        public static IFlowState<S> SelectMany<T,S>(this IFlowState<T> state, Func<T,IFlowState<S>> selector)
+            => state.SelectMany(selector, e => new Error<S>(e));
+
+        public static IFlowState<TResult> SelectMany<TSource, TFlow, TResult>(this IFlowState<TSource> source, Func<TSource, IFlowState<TFlow>> flowSelector, Func<TSource, TFlow, TResult> resultSelector)
+            => source.SelectMany(s => flowSelector(s).Select(t => resultSelector(s, t)));
+
         public static IFlowState<S> SelectMany<T,S>(this IFlowState<T> state, Func<T,IFlowState<S>> valueSelector, Func<Exception, IFlowState<S>> errorSelector)
         {
             switch(state)
@@ -61,8 +67,6 @@ namespace Flowing
                     return new Pending<S>();
             }
         }
-        public static IFlowState<S> SelectMany<T,S>(this IFlowState<T> state, Func<T,IFlowState<S>> selector)
-            => state.SelectMany(selector, e => new Error<S>(e));
         public static IFlowState<S> Select<T,S>(this IFlowState<T> state, Func<T,S> valueSelector, Func<Exception,S> errorSelector) 
             => state.SelectMany(t => new Value<S>(valueSelector(t)), e => new Value<S>(errorSelector(e)));
         public static IFlowState<S> Select<T,S>(this IFlowState<T> state, Func<T,S> selector) 
