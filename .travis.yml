@@ -2,11 +2,11 @@ language: csharp
 mono: none
 dotnet: 2.0.0
 script:
-  - dotnet restore Flow
-  - dotnet build Flow
-  - dotnet restore Tests
-  - dotnet test Tests
+  - dotnet restore src
+  - dotnet build src
+  - dotnet restore tests
+  - dotnet test tests
 after_success:
 #TODO: manage version number
-  - dotnet pack Flow -c Release --version-suffix beta$TRAVIS_BUILD_NUMBER -o nuget_package
-  - dotnet nuget push Flow/nuget_package/Flowing.1.0.0-beta$TRAVIS_BUILD_NUMBER.nupkg -s https://www.nuget.org/api/v2/package -k $nuget_api_key
+  - dotnet pack src -c Release --version-suffix beta$TRAVIS_BUILD_NUMBER -o nuget_package
+  - dotnet nuget push src/nuget_package/Flowing.1.0.0-beta$TRAVIS_BUILD_NUMBER.nupkg -s https://www.nuget.org/api/v2/package -k $nuget_api_key
