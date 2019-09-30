@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Flowing
 {
@@ -56,7 +55,7 @@ namespace Flowing
         public static IFlow<TResult> Switch<TSource, T1, T2, T3, TResult>(this IFlow<TSource> flow,
             Func<IFlow<T1>, IFlow<TResult>> firstSelector,
             Func<IFlow<T2>, IFlow<TResult>> secondSelector,
-            Func<IFlow<T2>, IFlow<TResult>> thirdSelector,
+            Func<IFlow<T3>, IFlow<TResult>> thirdSelector,
             Func<IFlow<TSource>, IFlow<TResult>> defaultSelector)
             where T1 : class, TSource
             where T2 : class, TSource
