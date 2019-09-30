@@ -90,6 +90,15 @@ dotnet_naming_symbols.const_field_symbol.applicable_kinds = field
 dotnet_naming_symbols.const_field_symbol.applicable_accessibilities = *
 dotnet_naming_symbols.const_field_symbol.required_modifiers = const
 
+# Static readonly fields
+dotnet_naming_rule.static_readonly_field_naming.symbols = static_readonly_field_symbol
+dotnet_naming_rule.static_readonly_field_naming.style = pascal_case_style
+dotnet_naming_rule.static_readonly_field_naming.severity = suggestion
+
+dotnet_naming_symbols.static_readonly_field_symbol.applicable_kinds = field
+dotnet_naming_symbols.static_readonly_field_symbol.applicable_accessibilities = *
+dotnet_naming_symbols.static_readonly_field_symbol.required_modifiers = readonly,static
+
 # Public fields
 dotnet_naming_rule.public_field_naming.symbols = public_field_symbol
 dotnet_naming_rule.public_field_naming.style = pascal_case_style

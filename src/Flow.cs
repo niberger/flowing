@@ -35,7 +35,7 @@ namespace Flowing
         public static IObservable<T> ToObservable<T>(this IFlow<T> flow) =>
             flow.StateObs.OfType<Value<T>>().Select(val => val.Val);
 
-        internal static IFlow<T> Flatten<T>(this IFlowState<IFlow<T>> state)
+        internal static IFlow<T> FlattenState<T>(this IFlowState<IFlow<T>> state)
         {
             switch (state)
             {
@@ -54,7 +54,16 @@ namespace Flowing
         /// Each time a new flow is received, unsubscribe from the older flow.
         /// </summary>
         public static IFlow<T> Flatten<T>(this IFlow<IFlow<T>> flow) => new Flow<T>(flow.StateObs
-            .Select(state => state.Flatten().StateObs).Switch().DistinctUntilChanged());
+            .Select(state => state.FlattenState().StateObs).Switch().DistinctUntilChanged());
+
+
+        /// <summary>
+        /// Transform a flow of flow into a flattened flow.
+        /// All the successive states of each flow are pulsed in the result.
+        /// See also <see cref="Flatten"/>
+        /// </summary>
+        public static IFlow<T> MergeAll<T>(this IFlow<IFlow<T>> flow) => new Flow<T>(flow.StateObs
+            .Select(state => state.FlattenState().StateObs).SelectMany(v => v).DistinctUntilChanged());
 
         /// <summary>
         /// Apply a function to each values pulsed in the flow and recover from exception pulsed.
