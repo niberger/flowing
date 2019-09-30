@@ -27,7 +27,7 @@ namespace Flowing
                 }
 
                 return defaultSelector(group);
-            }).Flatten();
+            }).MergeAll();
         }
 
         public static IFlow<TResult> Switch<TSource, T1, T2, TResult>(this IFlow<TSource> flow,
@@ -49,7 +49,7 @@ namespace Flowing
                     return secondSelector(group.Select(x => x as T2));
                 }
                 return defaultSelector(group);
-            }).Flatten();
+            }).MergeAll();
         }
 
         public static IFlow<TResult> Switch<TSource, T1, T2, T3, TResult>(this IFlow<TSource> flow,
@@ -77,7 +77,7 @@ namespace Flowing
                     return thirdSelector(group.Select(x => x as T3));
                 }
                 return defaultSelector(group);
-            }).Flatten();
+            }).MergeAll();
         }
     }
 }
